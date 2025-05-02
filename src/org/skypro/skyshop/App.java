@@ -15,6 +15,7 @@ public class App {
         SimpleProduct bread = new SimpleProduct("Хлеб", 40);
         SimpleProduct cheese = new SimpleProduct("Сыр", 120);
 
+        ///Добавляем корзину
         ProductBasket basket = new ProductBasket();
 
         // 1. Добавление продукта в корзину
