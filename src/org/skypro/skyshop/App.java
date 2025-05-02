@@ -1,19 +1,20 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.SimpleProduct;
 
 public class App {
     public static void main(String[] args) {
-        // Создаем продукты
-        Product apple = new Product("Яблоко", 50);
-        Product banana = new Product("Банан", 70);
-        Product orange = new Product("Апельсин", 60);
-        Product milk = new Product("Молоко", 80);
-        Product bread = new Product("Хлеб", 40);
-        Product cheese = new Product("Сыр", 120);
+        SimpleProduct apple = new SimpleProduct("Яблоко", 50);
+        DiscountedProduct banana = new DiscountedProduct("Банан", 70, 10);
+        FixPriceProduct orange = new FixPriceProduct("Апельсин");
+        SimpleProduct milk = new SimpleProduct("Молоко", 80);
+        SimpleProduct bread = new SimpleProduct("Хлеб", 40);
+        SimpleProduct cheese = new SimpleProduct("Сыр", 120);
 
-        // Создаем корзину
         ProductBasket basket = new ProductBasket();
 
         // 1. Добавление продукта в корзину
@@ -28,7 +29,7 @@ public class App {
 
         // 3. Печать содержимого корзины с несколькими товарами
         System.out.println("Содержимое корзины:");
-        basket.printContents();
+        basket.printBasket();
 
         // 4. Получение стоимости корзины с несколькими товарами
         System.out.println("Общая стоимость: " + basket.getTotalCost());
@@ -44,7 +45,7 @@ public class App {
 
         // 8. Печать содержимого пустой корзины
         System.out.println("Содержимое корзины после очистки:");
-        basket.printContents();
+        basket.printBasket();
 
         // 9. Получение стоимости пустой корзины
         System.out.println("Общая стоимость пустой корзины: " + basket.getTotalCost());
