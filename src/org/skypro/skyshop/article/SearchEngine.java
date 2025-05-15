@@ -1,5 +1,7 @@
 package org.skypro.skyshop.article;
 
+import org.skypro.skyshop.exception.BestResultsNotFound;
+
 public class SearchEngine {
 
     public Searchable[] items;
@@ -34,13 +36,7 @@ public class SearchEngine {
         items[size++] = item;
     }
 
-    public static class BestResultsNotFound extends Exception {
-        public BestResultsNotFound(String searchTerm) {
-            super("Не найден подходящий результат для поискового запроса: " + searchTerm);
-        }
-    }
-
-    public static Searchable findBestMatch(Searchable[] items, String search) throws BestResultsNotFound {
+    public Searchable findBestMatch(Searchable[] items, String search) throws BestResultsNotFound {
         if (items == null || items.length == 0) {
             throw new BestResultsNotFound(search);
         }
@@ -65,7 +61,7 @@ public class SearchEngine {
         return bestMatch;
     }
 
-    private static int countSubstringOccurances(String str, String substring) {
+    private int countSubstringOccurances(String str, String substring) {
         int count = 0;
         int index = 0;
         int substringLength = substring.length();

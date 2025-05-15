@@ -8,13 +8,14 @@ import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.exception.BestResultsNotFound;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public class App {
     public static void main(String[] args) {
-
+        SearchEngine searchEngine = new SearchEngine(10);
         try {
             Product invalidProduct = new SimpleProduct("   ", 100);
         } catch (IllegalArgumentException e) {
@@ -34,79 +35,23 @@ public class App {
         }
 
         //Поиск
-        Searchable[] items = new Searchable[]{
-                new Searchable() {
-                    public String getSearchTerm() {
-                        return "hello world hello";
-                    }
-
-                    @Override
-                    public String getContentType() {
-                        return "";
-                    }
-
-                    @Override
-                    public String getName() {
-                        return "";
-                    }
-                },
-                new Searchable() {
-                    public String getSearchTerm() {
-                        return "hello";
-                    }
-
-                    @Override
-                    public String getContentType() {
-                        return "";
-                    }
-
-                    @Override
-                    public String getName() {
-                        return "";
-                    }
-                },
-                new Searchable() {
-                    public String getSearchTerm() {
-                        return "world";
-                    }
-
-                    @Override
-                    public String getContentType() {
-                        return "";
-                    }
-
-                    @Override
-                    public String getName() {
-                        return "";
-                    }
-                },
-                new Searchable() {
-                    public String getSearchTerm() {
-                        return "hello hello hello";
-                    }
-
-                    @Override
-                    public String getContentType() {
-                        return "";
-                    }
-
-                    @Override
-                    public String getName() {
-                        return "";
-                    }
-                }
+        Searchable[] products = new Searchable[]{
+                new SimpleProduct("hello world hello", 100),
+                new SimpleProduct("hello", 200),
+                new SimpleProduct("world", 300),
+                new DiscountedProduct("hello hello hello", 400, 10)
         };
 
         try {
-            Searchable bestMatch = SearchEngine.findBestMatch(items, "hello");
+            Searchable bestMatch = searchEngine.findBestMatch(products, "hello");
             System.out.println("Лучший результат: " + bestMatch.getSearchTerm());
-        } catch (SearchEngine.BestResultsNotFound e) {
+        } catch (BestResultsNotFound e) {
             System.out.println(e.getMessage());
         }
 
         try {
-            Searchable noMatch = SearchEngine.findBestMatch(items, "abc");
-        } catch (SearchEngine.BestResultsNotFound e) {
+            Searchable noMatch = searchEngine.findBestMatch(products, "abc");
+        } catch (BestResultsNotFound e) {
             System.out.println(e.getMessage());
         }
 
@@ -120,7 +65,6 @@ public class App {
         //Добавляем корзину
         ProductBasket basket = new ProductBasket();
 
-        SearchEngine searchEngine = new SearchEngine(10);
 
         searchEngine.add(new SimpleProduct("Ноутбук", 30000));
         searchEngine.add(new SimpleProduct("Телевизор", 40000));
