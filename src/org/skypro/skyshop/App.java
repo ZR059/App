@@ -1,10 +1,15 @@
 package org.skypro.skyshop;
 
+import org.skypro.skyshop.article.Article;
+import org.skypro.skyshop.article.SearchEngine;
+import org.skypro.skyshop.article.Searchable;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
-import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 public class App {
     public static void main(String[] args) {
@@ -17,6 +22,29 @@ public class App {
 
         //Добавляем корзину
         ProductBasket basket = new ProductBasket();
+
+        SearchEngine searchEngine = new SearchEngine(10);
+
+        searchEngine.add(new SimpleProduct("Ноутбук", 30000));
+        searchEngine.add(new SimpleProduct("Телевизор", 40000));
+        searchEngine.add(new SimpleProduct("Смартфон", 50000));
+
+        searchEngine.add(new Article("Выбор ноутбука", "На что стоит обращать внимание при выборе ноутбука?"));
+        searchEngine.add(new Article("Какой телевизор стоит приобрести?", "Какие параметры влияют на выбор телевизора?"));
+        searchEngine.add(new Article("Самый популярный смартфон", "В данной статье модели самых популярных смартфонов"));
+
+
+        System.out.println("Результаты поиска для 'ноут': ");
+        printResults(searchEngine.search("ноут"));
+
+        System.out.println("\nРезультаты поиска для 'телевизор': ");
+        printResults(searchEngine.search("телевизор"));
+
+        System.out.println("\nРезультаты поиска для 'смартфон: ");
+        printResults(searchEngine.search("смартфон"));
+
+        System.out.println("\nРезультаты поиска для 'самый популярный': ");
+        printResults(searchEngine.search("самый популярный"));
 
         // 1. Добавление продукта в корзину
         basket.addProduct(apple);
@@ -53,5 +81,17 @@ public class App {
 
         // 10. Поиск товара по имени в пустой корзине
         System.out.println("Есть ли в пустой корзине Яблоко? " + basket.containsProduct("Яблоко"));
+    }
+
+    private static void printResults(Searchable[] results) {
+        if (results == null || results.length == 0) {
+            System.out.println("Ничего не найдено");
+            return;
+        }
+
+        System.out.println("Найдено результатов: " + Arrays.stream(results).filter(Objects::nonNull).count());
+        Arrays.stream(results)
+                .filter(Objects::nonNull)
+                .forEach(item -> System.out.println("- " + item.getStringRepresentation()));
     }
 }
