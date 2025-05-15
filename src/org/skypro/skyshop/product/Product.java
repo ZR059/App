@@ -7,7 +7,11 @@ public abstract class Product implements Searchable {
 
 
     public Product(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Название продукта не может быть пустым");
+        }
         this.name = name;
+
 
     }
 
@@ -17,17 +21,18 @@ public abstract class Product implements Searchable {
 
     public abstract int getCost();
 
+
     public boolean isSpecial() {
         return false;
     }
 
     @Override
-    public String getSearchTerm(){
+    public String getSearchTerm() {
         return getName();
     }
 
     @Override
-    public String getContentType(){
+    public String getContentType() {
         return "PRODUCT";
     }
 }
