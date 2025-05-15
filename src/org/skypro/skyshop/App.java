@@ -6,6 +6,7 @@ import org.skypro.skyshop.article.Searchable;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
+import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.Arrays;
@@ -13,6 +14,102 @@ import java.util.Objects;
 
 public class App {
     public static void main(String[] args) {
+
+        try {
+            Product invalidProduct = new SimpleProduct("   ", 100);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Не удалось создать продукт: " + e.getMessage());
+        }
+
+        try {
+            SimpleProduct invalidPriceProduct = new SimpleProduct("Книга", 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Не удалось создать продукт: " + e.getMessage());
+        }
+
+        try {
+            DiscountedProduct invalidDiscountProduct = new DiscountedProduct("Стул", 1500, 101);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Не удалось создать продукт: " + e.getMessage());
+        }
+
+        //Поиск
+        Searchable[] items = new Searchable[]{
+                new Searchable() {
+                    public String getSearchTerm() {
+                        return "hello world hello";
+                    }
+
+                    @Override
+                    public String getContentType() {
+                        return "";
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "";
+                    }
+                },
+                new Searchable() {
+                    public String getSearchTerm() {
+                        return "hello";
+                    }
+
+                    @Override
+                    public String getContentType() {
+                        return "";
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "";
+                    }
+                },
+                new Searchable() {
+                    public String getSearchTerm() {
+                        return "world";
+                    }
+
+                    @Override
+                    public String getContentType() {
+                        return "";
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "";
+                    }
+                },
+                new Searchable() {
+                    public String getSearchTerm() {
+                        return "hello hello hello";
+                    }
+
+                    @Override
+                    public String getContentType() {
+                        return "";
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "";
+                    }
+                }
+        };
+
+        try {
+            Searchable bestMatch = SearchEngine.findBestMatch(items, "hello");
+            System.out.println("Лучший результат: " + bestMatch.getSearchTerm());
+        } catch (SearchEngine.BestResultsNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Searchable noMatch = SearchEngine.findBestMatch(items, "abc");
+        } catch (SearchEngine.BestResultsNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
         SimpleProduct apple = new SimpleProduct("Яблоко", 50);
         DiscountedProduct banana = new DiscountedProduct("Банан", 70, 10);
         FixPriceProduct orange = new FixPriceProduct("Апельсин");
