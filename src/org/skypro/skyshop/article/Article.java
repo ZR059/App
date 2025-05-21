@@ -2,19 +2,19 @@ package org.skypro.skyshop.article;
 
 public final class Article implements Searchable {
 
-    private String title;
-    private String text;
+    private final String title;
+    private final String text;
 
-    public Article (String title, String text){
+    public Article(String title, String text) {
         this.title = title;
         this.text = text;
     }
 
-    String getTitle(){
+    String getTitle() {
         return title;
     }
 
-    String getText(){
+    String getText() {
         return text;
     }
 
@@ -24,7 +24,7 @@ public final class Article implements Searchable {
     }
 
     @Override
-    public String getSearchTerm(){
+    public String getSearchTerm() {
         return toString();
     }
 

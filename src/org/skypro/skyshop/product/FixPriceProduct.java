@@ -3,7 +3,7 @@ package org.skypro.skyshop.product;
 public class FixPriceProduct extends Product {
     private static final int FIX_PRICE = 10;
 
-    public FixPriceProduct(String name){
+    public FixPriceProduct(String name) {
         super(name);
     }
 

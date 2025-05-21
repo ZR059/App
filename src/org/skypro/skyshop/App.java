@@ -6,13 +6,55 @@ import org.skypro.skyshop.article.Searchable;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
+import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.exception.BestResultsNotFound;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public class App {
     public static void main(String[] args) {
+        SearchEngine searchEngine = new SearchEngine(10);
+        try {
+            Product invalidProduct = new SimpleProduct("   ", 100);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Не удалось создать продукт: " + e.getMessage());
+        }
+
+        try {
+            SimpleProduct invalidPriceProduct = new SimpleProduct("Книга", 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Не удалось создать продукт: " + e.getMessage());
+        }
+
+        try {
+            DiscountedProduct invalidDiscountProduct = new DiscountedProduct("Стул", 1500, 101);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Не удалось создать продукт: " + e.getMessage());
+        }
+
+        //Поиск
+        Searchable[] products = new Searchable[]{
+                new SimpleProduct("hello world hello", 100),
+                new SimpleProduct("hello", 200),
+                new SimpleProduct("world", 300),
+                new DiscountedProduct("hello hello hello", 400, 10)
+        };
+
+        try {
+            Searchable bestMatch = searchEngine.findBestMatch(products, "hello");
+            System.out.println("Лучший результат: " + bestMatch.getSearchTerm());
+        } catch (BestResultsNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Searchable noMatch = searchEngine.findBestMatch(products, "abc");
+        } catch (BestResultsNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
         SimpleProduct apple = new SimpleProduct("Яблоко", 50);
         DiscountedProduct banana = new DiscountedProduct("Банан", 70, 10);
         FixPriceProduct orange = new FixPriceProduct("Апельсин");
@@ -23,7 +65,6 @@ public class App {
         //Добавляем корзину
         ProductBasket basket = new ProductBasket();
 
-        SearchEngine searchEngine = new SearchEngine(10);
 
         searchEngine.add(new SimpleProduct("Ноутбук", 30000));
         searchEngine.add(new SimpleProduct("Телевизор", 40000));
