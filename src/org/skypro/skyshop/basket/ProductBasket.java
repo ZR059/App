@@ -2,33 +2,39 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class ProductBasket {
-    private static final int BASKET_CAPACITY = 5;
-    private final Product[] products;
-    private int count;
+    private final List<Product> products;
 
     public ProductBasket() {
-        this.products = new Product[BASKET_CAPACITY];
-        this.count = 0;
+        this.products = new ArrayList<>();
     }
 
+    public List<Product> removeProductsByName(String name) {
+        List<Product> removedProducts = new ArrayList<>();
+        Iterator<Product> iterator = products.iterator();
+
+        while (iterator.hasNext()) {
+            Product product = iterator.next();
+            if (product.getName().equals(name)) {
+                removedProducts.add(product);
+                iterator.remove();
+            }
+        }
+        return removedProducts;
+    }
 
     public void addProduct(Product product) {
-        if (count < BASKET_CAPACITY) {
-            products[count] = product;
-            count++;
-        } else {
-            System.out.println("Невозможно добавить продукт");
-        }
+        products.add(product);
     }
-
 
     public int getTotalCost() {
         int total = 0;
-        for (int i = 0; i < count; i++) {
-            total += products[i].getCost();
+        for (Product product : products) {
+            total += product.getCost();
         }
         return total;
     }
@@ -56,21 +62,17 @@ public class ProductBasket {
     }
 
     public boolean containsProduct(String productName) {
-        for (int i = 0; i < count; i++) {
-            if (products[i].getName().equals(productName)) {
+        for (Product product : products) {
+            if (product != null && product.getName().equals(productName)) {
                 return true;
             }
         }
         return false;
     }
 
-
     public void clear() {
-        Arrays.fill(products, null);
-        count = 0;
+        products.clear();
     }
-
-
 }
 
 

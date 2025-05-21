@@ -1,39 +1,41 @@
 package org.skypro.skyshop.article;
 
 import org.skypro.skyshop.exception.BestResultsNotFound;
+import org.skypro.skyshop.product.Product;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SearchEngine {
 
-    public Searchable[] items;
-    private int size;
+    private final List<Product> products;
+    private final List<Searchable> items;
 
-    public SearchEngine(int capacity) {
-        this.items = new Searchable[capacity];
-        this.size = 0;
+    public SearchEngine() {
+        this.products = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
-    public Searchable[] search(String query) {
+    public List<Product> search(String query) {
+
         if (query == null || query.trim().isEmpty()) {
-            return new Searchable[0];
+            return Collections.emptyList();
         }
-
-        Searchable[] results = new Searchable[5];
-        int findCount = 0;
-
-        for (int i = 0; i < size && findCount < 5; i++) {
-            Searchable item = items[i];
+        List<Product> results = new ArrayList<>();
+        for (Product item : products) {
             if (item.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                results[findCount++] = item;
+                results.add(item);
             }
         }
         return results;
     }
 
     public void add(Searchable item) {
-        if (size >= items.length) {
-            throw new IllegalStateException("Больше места нет!");
+        if (item == null) {
+            throw new IllegalStateException("Нельзя добавить пустой элемент!");
         }
-        items[size++] = item;
+        items.add(item);
     }
 
     public Searchable findBestMatch(Searchable[] items, String search) throws BestResultsNotFound {
