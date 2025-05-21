@@ -8,22 +8,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class SearchEngine {
-
-    private final List<Product> products;
     private final List<Searchable> items;
 
     public SearchEngine() {
-        this.products = new ArrayList<>();
         this.items = new ArrayList<>();
     }
 
-    public List<Product> search(String query) {
+    public List<Searchable> search(String query) {
 
         if (query == null || query.trim().isEmpty()) {
             return Collections.emptyList();
         }
-        List<Product> results = new ArrayList<>();
-        for (Product item : products) {
+        List<Searchable> results = new ArrayList<>();
+        for (Searchable item : items) {
             if (item.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
                 results.add(item);
             }
@@ -59,7 +56,6 @@ public class SearchEngine {
         if (maxCount == 0) {
             throw new BestResultsNotFound(search);
         }
-
         return bestMatch;
     }
 
