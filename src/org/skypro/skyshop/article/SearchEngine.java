@@ -3,36 +3,25 @@ package org.skypro.skyshop.article;
 import org.skypro.skyshop.exception.BestResultsNotFound;
 import org.skypro.skyshop.product.Product;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class SearchEngine {
-    private final List<Searchable> items;
+    private final Map<String, Searchable> items = new TreeMap<>();
 
-    public SearchEngine() {
-        this.items = new ArrayList<>();
-    }
+    public Map<String, Searchable> search(String query) {
+        Map<String, Searchable> result = new TreeMap<>();
 
-    public List<Searchable> search(String query) {
-
-        if (query == null || query.trim().isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<Searchable> results = new ArrayList<>();
-        for (Searchable item : items) {
-            if (item.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                results.add(item);
+        for (Map.Entry<String, Searchable> entry : items.entrySet()) {
+            if (entry.getKey().toLowerCase().contains(query.toLowerCase())) {
+                result.put(entry.getKey(), entry.getValue());
             }
         }
-        return results;
+        return result;
     }
 
+
     public void add(Searchable item) {
-        if (item == null) {
-            throw new IllegalStateException("Нельзя добавить пустой элемент!");
-        }
-        items.add(item);
+        items.put(item.getSearchTerm(), item);
     }
 
     public Searchable findBestMatch(Searchable[] items, String search) throws BestResultsNotFound {
