@@ -10,12 +10,13 @@ import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 import org.skypro.skyshop.exception.BestResultsNotFound;
 
-import java.util.Arrays;
-import java.util.Objects;
+
+import java.util.List;
+
 
 public class App {
     public static void main(String[] args) {
-        SearchEngine searchEngine = new SearchEngine(10);
+        SearchEngine searchEngine = new SearchEngine();
         try {
             Product invalidProduct = new SimpleProduct("   ", 100);
         } catch (IllegalArgumentException e) {
@@ -62,10 +63,6 @@ public class App {
         SimpleProduct bread = new SimpleProduct("Хлеб", 40);
         SimpleProduct cheese = new SimpleProduct("Сыр", 120);
 
-        //Добавляем корзину
-        ProductBasket basket = new ProductBasket();
-
-
         searchEngine.add(new SimpleProduct("Ноутбук", 30000));
         searchEngine.add(new SimpleProduct("Телевизор", 40000));
         searchEngine.add(new SimpleProduct("Смартфон", 50000));
@@ -87,52 +84,76 @@ public class App {
         System.out.println("\nРезультаты поиска для 'самый популярный': ");
         printResults(searchEngine.search("самый популярный"));
 
-        // 1. Добавление продукта в корзину
+        // Создаём корзину
+        ProductBasket basket = new ProductBasket();
+
+        // Добавление продукта в корзину
         basket.addProduct(apple);
         basket.addProduct(banana);
         basket.addProduct(orange);
         basket.addProduct(milk);
         basket.addProduct(bread);
 
-        // 2. Добавление продукта в заполненную корзину
-        basket.addProduct(cheese); // Должно вывести "Невозможно добавить продукт"
-
-        // 3. Печать содержимого корзины с несколькими товарами
-        System.out.println("Содержимое корзины:");
+        // Печать содержимого корзины с несколькими товарами
+        System.out.println("\nСодержимое корзины:");
         basket.printBasket();
 
-        // 4. Получение стоимости корзины с несколькими товарами
-        System.out.println("Общая стоимость: " + basket.getTotalCost());
+        //Удаляем существующий продукт
+        System.out.println("\n===Удаляем яблоко===");
+        List<Product> removed = basket.removeProductsByName("Яблоко");
+        if (!removed.isEmpty()) {
+            System.out.println("Удаленные продукты: ");
+            for (Product product : removed) {
+                System.out.println(product);
+            }
+        } else {
+            System.out.println("Список удаленных продуктов пуст");
+        }
+        System.out.println("\nСодержимое корзины после удаления");
+        basket.printBasket();
 
-        // 5. Поиск товара, который есть в корзине
-        System.out.println("Есть ли в корзине Банан? " + basket.containsProduct("Банан"));
 
-        // 6. Поиск товара, которого нет в корзине
-        System.out.println("Есть ли в корзине Сыр? " + basket.containsProduct("Сыр"));
+        // Удаляем не существующий продукт
+        System.out.println("\n===Удаляем сыр===");
+        List<Product> notFound = basket.removeProductsByName("Сыр");
+        if (notFound.isEmpty()) {
+            System.out.println("Продукта нет в корзине");
+        }
+        System.out.println("\nСодержимое корзины после удаления: ");
+        basket.printBasket();
 
-        // 7. Очистка корзины
+        // Получение стоимости корзины с несколькими товарами
+        System.out.println("\nОбщая стоимость: " + basket.getTotalCost());
+
+        // Поиск товара, который есть в корзине
+        System.out.println("\nЕсть ли в корзине Банан? " + basket.containsProduct("Банан"));
+
+        // Поиск товара, которого нет в корзине
+        System.out.println("\nЕсть ли в корзине Сыр? " + basket.containsProduct("Сыр"));
+
+        // Очистка корзины
         basket.clear();
 
-        // 8. Печать содержимого пустой корзины
-        System.out.println("Содержимое корзины после очистки:");
+        // Печать содержимого пустой корзины
+        System.out.println("\nСодержимое корзины после очистки:");
         basket.printBasket();
 
-        // 9. Получение стоимости пустой корзины
-        System.out.println("Общая стоимость пустой корзины: " + basket.getTotalCost());
+        // Получение стоимости пустой корзины
+        System.out.println("\nОбщая стоимость пустой корзины: " + basket.getTotalCost());
 
-        // 10. Поиск товара по имени в пустой корзине
-        System.out.println("Есть ли в пустой корзине Яблоко? " + basket.containsProduct("Яблоко"));
+        // Поиск товара по имени в пустой корзине
+        System.out.println("\nЕсть ли в пустой корзине Яблоко? " + basket.containsProduct("Яблоко"));
     }
 
-    private static void printResults(Searchable[] results) {
-        if (results == null || results.length == 0) {
+    private static void printResults(List<? extends Searchable> results) {
+        if (results.isEmpty()) {
             System.out.println("Ничего не найдено");
             return;
         }
 
-        System.out.println("Найдено результатов: " + Arrays.stream(results).filter(Objects::nonNull).count());
-        Arrays.stream(results)
-                .filter(Objects::nonNull)
-                .forEach(item -> System.out.println("- " + item.getStringRepresentation()));
+        System.out.println("Найдено результатов: ");
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println((i + 1) + ". " + results.get(i).getSearchTerm());
+        }
     }
 }
