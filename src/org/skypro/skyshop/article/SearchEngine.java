@@ -6,22 +6,41 @@ import org.skypro.skyshop.product.Product;
 import java.util.*;
 
 public class SearchEngine {
-    private final Map<String, Searchable> items = new TreeMap<>();
+    private final Set<Product> products = new HashSet<>();
+    private final Set<Article> articles = new HashSet<>();
+    private final Set<Product> items = new HashSet<>();
 
-    public Map<String, Searchable> search(String query) {
-        Map<String, Searchable> result = new TreeMap<>();
+    public Set<Searchable> search(String query) {
+        String lowerQuery = query.toLowerCase();
+        Comparator<Searchable> comparator = (o1, o2) -> {
+            int lengthCompare = Integer.compare(o2.getName().length(), o1.getName().length());
+            if (lengthCompare != 0) {
+                return lengthCompare;
+            }
+            return o1.getName().compareTo(o2.getName());
+        };
 
-        for (Map.Entry<String, Searchable> entry : items.entrySet()) {
-            if (entry.getKey().toLowerCase().contains(query.toLowerCase())) {
-                result.put(entry.getKey(), entry.getValue());
+        Set<Searchable> result = new TreeSet<>(comparator);
+
+        for (Product product : products) {
+            if (product.getName().toLowerCase().contains(lowerQuery)) {
+                result.add(product);
+            }
+        }
+        for (Article article : articles) {
+            if (article.getName().toLowerCase().contains(lowerQuery)) {
+                result.add(article);
             }
         }
         return result;
     }
 
+    public void add(Product product) {
+        products.add(product);
+    }
 
-    public void add(Searchable item) {
-        items.put(item.getSearchTerm(), item);
+    public void add(Article article) {
+        articles.add(article);
     }
 
     public Searchable findBestMatch(Searchable[] items, String search) throws BestResultsNotFound {

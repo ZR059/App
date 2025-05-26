@@ -11,8 +11,6 @@ public abstract class Product implements Searchable {
             throw new IllegalArgumentException("Название продукта не может быть пустым");
         }
         this.name = name;
-
-
     }
 
     public String getName() {
@@ -34,5 +32,18 @@ public abstract class Product implements Searchable {
     @Override
     public String getContentType() {
         return "PRODUCT";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return name.equals(product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }
