@@ -12,7 +12,7 @@ import org.skypro.skyshop.exception.BestResultsNotFound;
 
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 
 public class App {
@@ -146,16 +146,16 @@ public class App {
         System.out.println("\nЕсть ли в пустой корзине Яблоко? " + basket.containsProduct("Яблоко"));
     }
 
-    private static void printResults(Map<String, ? extends Searchable> results) {
+    private static void printResults(Set<? extends Searchable> results) {
         if (results.isEmpty()) {
             System.out.println("Ничего не найдено");
             return;
         }
 
         System.out.println("Найдено результатов: " + results.size());
-        int count = 1;
-        for (Map.Entry<String, ? extends Searchable> entry : results.entrySet()) {
-            System.out.println(count++ + ". " + entry.getKey());
+
+        for (Searchable item : results) {
+            System.out.println("- " + item.getName());
         }
     }
 }
