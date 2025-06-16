@@ -4,43 +4,22 @@ import org.skypro.skyshop.exception.BestResultsNotFound;
 import org.skypro.skyshop.product.Product;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private final Set<Product> products = new HashSet<>();
-    private final Set<Article> articles = new HashSet<>();
-    private final Set<Product> items = new HashSet<>();
 
-    public Set<Searchable> search(String query) {
-        String lowerQuery = query.toLowerCase();
-        Comparator<Searchable> comparator = (o1, o2) -> {
-            int lengthCompare = Integer.compare(o2.getName().length(), o1.getName().length());
-            if (lengthCompare != 0) {
-                return lengthCompare;//
-            }
-            return o1.getName().compareTo(o2.getName());
-        };
+    public TreeSet<Product> search(String query) {
+        String[] queryWords = query.toLowerCase().split("\\s+");
 
-        Set<Searchable> result = new TreeSet<>(comparator);
-
-        for (Product product : products) {
-            if (product.getName().toLowerCase().contains(lowerQuery)) {
-                result.add(product);
-            }
-        }
-        for (Article article : articles) {
-            if (article.getName().toLowerCase().contains(lowerQuery)) {
-                result.add(article);
-            }
-        }
-        return result;
+        return products.stream()
+                .filter(product -> Arrays.stream(queryWords)
+                        .allMatch(word -> product.getName().toLowerCase().contains(word)))
+                .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Product::getName))));
     }
 
     public void add(Product product) {
         products.add(product);
-    }
-
-    public void add(Article article) {
-        articles.add(article);
     }
 
     public Searchable findBestMatch(Searchable[] items, String search) throws BestResultsNotFound {
